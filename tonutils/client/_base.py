@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+from ssl import create_default_context
 from typing import Any, Optional, List, Dict
 
 import aiohttp
+import certifi
 
 from ..account import RawAccount
 from ..exceptions import PytoniqDependencyError
@@ -69,6 +71,7 @@ class Client:
                         params=params,
                         json=body,
                         timeout=self.timeout,
+                        ssl=create_default_context(cafile=certifi.where())
                 ) as response:
                     content = await self.__read_content(response)
 
