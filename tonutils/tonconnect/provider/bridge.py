@@ -351,7 +351,7 @@ class HTTPBridge:
         async with aiohttp.ClientSession(headers=headers) as session:
             try:
                 headers = {"Content-type": "text/plain;charset=UTF-8"}
-                async with session.post(url, data=request, headers=headers) as response:
+                async with session.post(url, data=request, headers=headers, ssl=create_default_context(cafile=certifi.where())) as response:
                     if response.status != 200:
                         logger.debug(f"Failed to send message with status code: {response.status}")
                         raise TonConnectError(f"Failed to send message: {response.status}")
