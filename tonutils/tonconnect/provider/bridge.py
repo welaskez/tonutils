@@ -1,9 +1,11 @@
 import asyncio
 import json
+from ssl import create_default_context
 from typing import Awaitable, Callable, Dict, Optional, Any
 from urllib.parse import urlencode, quote_plus
 
 import aiohttp
+import certifi
 
 from ..models import (
     Request,
@@ -228,7 +230,7 @@ class HTTPBridge:
                 self._client_session = aiohttp.ClientSession(headers=headers, timeout=timeout)
 
             try:
-                async with self._client_session.get(url) as response:
+                async with self._client_session.get(url, ssl=create_default_context(cafile=certifi.where())) as response:
                     if response.status != 200:
                         logger.debug(f"Failed to connect to bridge with status code: {response.status}")
                         raise TonConnectError(f"Failed to connect to bridge: {response.status}")
