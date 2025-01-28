@@ -1,9 +1,11 @@
 import asyncio
 import json
 from pathlib import Path
+from ssl import create_default_context
 from typing import Any, Dict, List, Optional
 
 import aiohttp
+import certifi
 from cachetools import TTLCache
 
 from tonutils.tonconnect.utils.logger import logger
@@ -139,7 +141,7 @@ class WalletsListManager:
         """
         async with aiohttp.ClientSession() as session:
             try:
-                async with session.get(self.source_url) as response:
+                async with session.get(self.source_url, ssl=create_default_context(cafile=certifi.where())) as response:
                     response.raise_for_status()
                     content = await response.text()
                     wallets = json.loads(content)
